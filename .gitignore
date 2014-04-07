@@ -1,2 +1,6 @@
 .gradle
 build/
+.settings/
+.project
+.classpath
+newrelic.yml
