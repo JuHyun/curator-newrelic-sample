@@ -1,0 +1,58 @@
+apply plugin: 'groovy'
+apply plugin: 'spring-boot'
+
+group = 'org.apache.curator'
+version = '1.0.0-SNAPSHOT'
+
+description = """Sample application that displays how to use the New Relic integration with Apache Curator"""
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+buildscript {
+    repositories {
+		mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.0.1.BUILD-SNAPSHOT")
+    }
+}
+
+ext {
+    curatorVersion='2.4.0'
+	groovyVersion='2.2.1'
+    springBootVersion='1.0.0.RELEASE'
+    springVersion='4.0.3.RELEASE'
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+	mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.codehaus.groovy:groovy-all:${groovyVersion}")
+    compile("org.springframework:spring-beans:${springVersion}")
+    compile("org.springframework:spring-context:${springVersion}")
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    compile("org.apache.curator:curator-framework:${curatorVersion}") {
+		exclude group:'org.slf4j', module:'slf4j-api'
+		exclude group:'org.slf4j', module:'slf4j-log4j12'
+		exclude group:'log4j', module:'log4j'
+    }
+    compile('org.apache.curator:curator-newrelic:1.0.0-SNAPSHOT') {
+		exclude group:'org.slf4j', module:'slf4j-api'
+		exclude group:'org.slf4j', module:'slf4j-log4j12'
+    }
+
+	testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+}
+
+springBoot {
+	mainClass = 'org.apache.curator.newrelic.sample.Application'
+	agent = file('/opt/newrelic/newrelic.jar')
+}
